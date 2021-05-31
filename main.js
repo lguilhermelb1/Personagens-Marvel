@@ -15,8 +15,13 @@ function main() {
         jsonParsed.data.results.forEach(element => {
             const imagemHeroi = element.thumbnail.path + "." + element.thumbnail.extension;
             const nomeHeroi = element.name;
-            const HQs = element.comics.items;
-            createDiv(imagemHeroi, nomeHeroi, divHerois, HQs);
+            let HQs = element.comics.items;
+            if (HQs.length == 0) {      //Se o personagem não apresenta HQs no JSON define HQs para 0
+                HQs = 0;
+                createDiv(imagemHeroi, nomeHeroi, divHerois, HQs);
+            } else {                    //Se apresentar passa as HQs
+                createDiv(imagemHeroi, nomeHeroi, divHerois, HQs);
+            }
         });
     })
 }
@@ -30,22 +35,30 @@ function createDiv(imagem, nome, div, HQs) {
     const nm = document.createElement("text");
     let hq = document.createElement("text");
 
+    //Defino os elementos com os atributos
     img.src = imagem;
     img.className = "imagem";
     nm.textContent = nome;
     nm.className = "nome";
     hq.textContent = "HQs: ";
+
     let i = 0;
-    while (i < HQs.length) {
-        if (i == HQs.length - 1) {
-            hq.textContent += `"${HQs[i].name}".`;
-        } else {
-            hq.textContent += `"${HQs[i].name}", `;
+    if (HQs == 0) {     //Caso o personagem não apresente HQs mostra "Sem registro"
+        hq.textContent += `Sem registro.`;
+    } else {
+        while (i < HQs.length) {    //Se apresentar HQs mostra todas
+            if (i == HQs.length - 1) {
+                hq.textContent += `"${HQs[i].name}".`;
+            } else {
+                hq.textContent += `"${HQs[i].name}", `;
+            }
+            i++;
         }
-        i++;
     }
+
     hq.className = "hq";
 
+    //São inseridos os elementos nas divisões necessárias
     divHeroi.appendChild(img);
     divHeroi.appendChild(nm);
     divHeroi.appendChild(hq);
